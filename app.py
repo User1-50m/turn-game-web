@@ -4,7 +4,7 @@ import random
 import copy  # To clone enemy objects
 
 app = Flask(__name__)
-app.secret_key = "replace_with_a_strong_secret_key"
+app.secret_key = b'\xef&1-c%\xd4\xefO\x10\xd7\x1a\x99\x18\xbb8\xbc\xb0\x14NU\x03\xd3\x8c'
 
 @app.route('/reset', methods=['POST'])
 def reset():
