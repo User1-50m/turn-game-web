@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Battle Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #1b1b1b;
+            color: #fff;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 100vh;
+        }
+        .section {
+            padding: 20px;
+            border: 1px solid #444;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            background-color: #2c2c2c;
+        }
+        .section h2 {
+            margin-top: 0;
+        }
+        .moves button {
+            margin: 5px;
+        }
+    </style>
+</head>
+<body>
+
+
+    <div id="popup" style="
+        position: fixed;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        background: rgba(0, 0, 0, 0.9);
+        color: white;
+        display: none; /* Hide by default */
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+    ">
+        <h2>🧟 Welcome, brave adventurer!</h2>
+        <p>Are you ready for some tough battles?</p>
+        <button onclick="dismissPopup()" style="
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 1rem;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        ">Yes, let’s go!</button>
+        </div>
+
+  
+    <div class="container">
+
+        <!-- Player Section (Top) -->
+        <div class="section">
+            <h2>{{ player.name }}</h2>
+            <p>HP: {{ player.hp }} / {{ player.max_hp }}</p>
+            <p>Stamina: {{ player.stamina }} / {{ player.max_stamina }}</p>
+
+            <form method="POST" action="/attack">
+              <div class="moves">
+                {% for move in player.attacks %}
+                  <button type="submit" name="attack" value="{{ move.name }}">
+                    {{ move.name }} (Cost: {{ move.stamina_cost }})
+                  </button>
+                {% endfor %}
+              </div>
+            </form>
+
+        </div>
+
+        <!-- Enemy Section (Bottom) -->
+        <div class="section">
+    <h2>{{ enemy.name }}</h2>
+    <p>HP: {{ enemy.hp }} / {{ enemy.max_hp }}</p>
+    <p>Stamina: {{ enemy.stamina }} / {{ enemy.max_stamina }}</p>
+
+    {% if message %}
+        <p><strong>{{ message }}</strong></p>
+    {% endif %}
+
+    <!-- 🔁 Reset Button Form -->
+    <form action="/reset" method="POST">
+        <button type="submit">🔁 Reset Game</button>
+    </form>
+        </div>
+
+
+    </div>
+<script>
+    window.onload = function () {
+        let navType = "navigate";
+
+        // Try new Navigation Timing Level 2 API
+        if (performance.getEntriesByType("navigation")[0]) {
+            navType = performance.getEntriesByType("navigation")[0].type;
+        } else if (performance.navigation) {
+            // Fallback for older browsers
+            const legacyType = performance.navigation.type;
+            navType = legacyType === 1 ? "reload" : "navigate";
+        }
+
+        const isDirectVisit = document.referrer === "";
+        const isReload = navType === "reload";
+
+        if (isDirectVisit || isReload) {
+            document.getElementById("popup").style.display = "flex";
+        }
+    };
+
+    function dismissPopup() {
+        document.getElementById("popup").style.display = "none";
+    }
+</script>
+</body>
+</html>
